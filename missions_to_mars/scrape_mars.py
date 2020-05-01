@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup as bs
-from splinter import Browser
+from splinter.browser import Browser
 import pandas as pd
 import requests as req
 import time
@@ -10,13 +10,13 @@ def init_browser():
     return Browser('chrome', **executable_path, headless=False)
 
 def scrape():
-    browser = init_browser()
+    scrape_dict = {}
 
 ##Mars.Nasa.Gov
 url = 'https://mars.nasa.gov/news/'
-browser.visit(url)
+Browser.visit(url)
 
-html = browser.html
+html = Browser.html
 soup = bs(html, 'html.parser')
 
 article = soup.find("div", class_='list_text')
@@ -30,6 +30,9 @@ news_title = article.find('div', class_="content_title").text
 
 news_para = article.find('div', class_="article_teaser_body").text
 
+scrape_dict["news_title"]=news_title
+
+scrape_dict["news_para"]=news_para
 #JPL Mars Space Images
 
 url_jpl = "https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars"
@@ -145,7 +148,7 @@ for hemisphere in hemispheres:
     browser.quit()
 
     # Return results
-    return mars_data
-
-if __name__ == '__main__':
-    scrape()
+    #return mars_data
+    return scrape_dict
+#if __name__ == '__main__':
+    #scrape()
